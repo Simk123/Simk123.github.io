@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Community Voices - Climate Equity Map NYC</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://use.typekit.net/vbu4mjm.css">
+    <!-- ArcGIS Embeddable Map Component -->
+    <script type="module" src="https://js.arcgis.com/4.34/embeddable-components/"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <a href="index.html" class="nav-brand">CLIMATE EQUITY MAP</a>
+            
+            <div class="nav-right">
+                <a href="community-voices.html" class="current">COMMUNITY VOICES</a>
+                <a href="take-action.html">TAKE ACTION</a>
+                <a href="learn.html">LEARN</a>
+            </div>
+            
+            <button class="hamburger-menu" id="hamburger-btn" aria-label="Toggle menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobile-overlay"></div>
+
+    <!-- Mobile Menu Panel -->
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="mobile-menu-header">
+            <span class="mobile-menu-title">Menu</span>
+            <button class="close-menu" id="close-menu" aria-label="Close menu">&times;</button>
+        </div>
+        <nav class="mobile-nav-links">
+            <a href="community-voices.html" class="current">COMMUNITY VOICES</a>
+            <a href="take-action.html">TAKE ACTION</a>
+            <a href="learn.html">LEARN</a>
+        </nav>
+    </div>
+
+    <!-- Community Voices Hero -->
+    <section class="cv-hero">
+        <div class="cv-hero-background">
+            <img src="images/Group 28.svg" alt="" class="hero-bg-svg">
+        </div>
+        
+        <!-- Tagline -->
+        <div class="cv-tagline-container">
+            <h1 class="cv-tagline">Climate resilience should be for everyone, not just those who can <em>afford it</em></h1>
+        </div>
+    </section>
+
+    <!-- Description -->
+    <section class="cv-description-section">
+        <div class="cv-description-container">
+            <p>As climate change intensifies, low-income and BIPOC communities disproportionately bear the burden of environmental hazards while often having the least access to green infrastructure and climate resilience resources.</p>
+        </div>
+    </section>
+
+    <!-- Map Section -->
+    <section class="cv-map-section">
+        <div class="cv-map-container">
+            <!-- Legend -->
+            <div class="map-legend">
+             <!---   <div class="legend-item">
+                    <span class="legend-dot heat-vulnerability"></span>
+                    <span class="legend-label">Heat Vulnerability</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot flood-risk"></span>
+                    <span class="legend-label">Flood Risk</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot existing-green"></span>
+                    <span class="legend-label">Existing Green Infrastructure</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot hypothetical-green"></span>
+                    <span class="legend-label">Hypothetical Green Infrastructure</span>
+                </div>
+                <div class="legend-item">
+                    <span class="legend-dot community-stories"></span>
+                    <span class="legend-label">Community Stories</span>
+                </div> ---->
+            </div>
+            
+            <!-- Embedded ArcGIS Map -->
+            <arcgis-embedded-map 
+                style="height:600px; width:100%; max-width:700px; margin: 0 auto; display: block;" 
+                item-id="ccfb41fb0da442d493926037a4af5dec" 
+                theme="light" 
+                center="-73.95098690305319,40.700009157859995"
+                scale="288895.2771445" 
+                portal-url="https://prattsavi.maps.arcgis.com">
+            </arcgis-embedded-map>
+        </div>
+    </section>
+
+    <!-- Submit Your Story Section -->
+    <section class="cv-submit-story-section">
+        <div class="cv-container">
+            <h2 class="cv-section-title">Share Your Climate Story</h2>
+            <p class="cv-section-description">
+                Help us understand climate equity issues in your neighborhood. Your experiences matter and will contribute to building a more resilient NYC.
+            </p>
+            
+            <!-- Survey123 Embed -->
+            <style>
+                .embed-container {
+                    position: relative; 
+                    height: 0; 
+                    padding-bottom: 80%; 
+                    max-width: 700px;
+                    margin: 0 auto;
+                } 
+                .embed-container iframe, 
+                .embed-container object, 
+                .embed-container iframe {
+                    position: absolute; 
+                    top: 0; 
+                    left: 0; 
+                    width: 100%; 
+                    height: 100%;
+                } 
+                small {
+                    position: absolute; 
+                    z-index: 40; 
+                    bottom: 0; 
+                    margin-bottom: -15px;
+                }
+            </style>
+            <div class="embed-container">
+                <iframe 
+                    name="survey123webform" 
+                    width="500" 
+                    height="400" 
+                    frameborder="0" 
+                    marginheight="0" 
+                    marginwidth="0" 
+                    title="NYC Climate Stories" 
+src="https://survey123.arcgis.com/share/69374d872b7a416290b3fffc4f3c7148"                    allow="geolocation https://survey123.arcgis.com; camera https://survey123.arcgis.com; microphone https://survey123.arcgis.com; local-network-access">
+                </iframe>
+            </div>
+            <script>
+                var survey123webform = document.getElementsByName('survey123webform')[0];
+                window.addEventListener("message", e => {
+                    if(e.data) {
+                        var t = JSON.parse(e.data);
+                        ["survey123:webform:formLoaded","survey123:onFormLoaded"].includes(t.event) && 
+                        t.contentHeight && 
+                        (survey123webform.parentNode.style.height = t.contentHeight + "px") && 
+                        (survey123webform.parentNode.style["padding-bottom"] = "unset")
+                    }
+                });
+            </script>
+        </div>
+    </section>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileOverlay = document.getElementById('mobile-overlay');
+            const closeMenuBtn = document.getElementById('close-menu');
+            const body = document.body;
+
+            function openMobileMenu() {
+                hamburgerBtn.classList.add('active');
+                mobileMenu.classList.add('active');
+                mobileOverlay.classList.add('active');
+                body.classList.add('menu-open');
+            }
+
+            function closeMobileMenu() {
+                hamburgerBtn.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                mobileOverlay.classList.remove('active');
+                body.classList.remove('menu-open');
+            }
+
+            if (hamburgerBtn) {
+                hamburgerBtn.addEventListener('click', function() {
+                    if (mobileMenu.classList.contains('active')) {
+                        closeMobileMenu();
+                    } else {
+                        openMobileMenu();
+                    }
+                });
+            }
+
+            if (closeMenuBtn) {
+                closeMenuBtn.addEventListener('click', closeMobileMenu);
+            }
+
+            if (mobileOverlay) {
+                mobileOverlay.addEventListener('click', closeMobileMenu);
+            }
+
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-links a');
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', closeMobileMenu);
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && mobileMenu && mobileMenu.classList.contains('active')) {
+                    closeMobileMenu();
+                }
+            });
+
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768 && mobileMenu && mobileMenu.classList.contains('active')) {
+                    closeMobileMenu();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

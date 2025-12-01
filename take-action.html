@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Take Action - Climate Equity Map NYC</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://use.typekit.net/vbu4mjm.css">
+    <!-- ArcGIS Embeddable Map Component -->
+    <script type="module" src="https://js.arcgis.com/4.34/embeddable-components/"></script>
+    <style>
+        /* Email Template Modal Styles */
+        .template-modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow-y: auto;
+        }
+
+        .template-modal.active {
+            display: block;
+        }
+
+        .template-modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 8px;
+            max-width: 700px;
+            position: relative;
+        }
+
+        .template-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .template-modal-header h3 {
+            margin: 0;
+            font-size: 24px;
+        }
+
+        .template-close {
+            font-size: 32px;
+            font-weight: bold;
+            color: #666;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 0;
+            line-height: 1;
+        }
+
+        .template-close:hover {
+            color: #000;
+        }
+
+        .template-text {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            max-height: 400px;
+            overflow-y: auto;
+            line-height: 1.6;
+        }
+
+        .template-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .template-copy-btn,
+        .template-edit-btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .template-copy-btn {
+            background-color: #2d5f3f;
+            color: white;
+        }
+
+        .template-copy-btn:hover {
+            background-color: #234a31;
+        }
+
+        .template-edit-btn {
+            background-color: #e0e0e0;
+            color: #333;
+        }
+
+        .template-edit-btn:hover {
+            background-color: #d0d0d0;
+        }
+
+        .copy-success {
+            color: #2d5f3f;
+            font-weight: 600;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .copy-success.show {
+            display: block;
+        }
+
+        /* Representative Search Result Styles */
+        .search-results {
+            margin-top: 20px;
+            padding: 20px;
+            background-color: #f5f5f5;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .search-results.show {
+            display: block;
+        }
+
+        .search-results h4 {
+            margin-top: 0;
+            margin-bottom: 15px;
+        }
+
+        .rep-info {
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .rep-info:last-child {
+            border-bottom: none;
+        }
+
+        .rep-info strong {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .rep-info a {
+            color: #2d5f3f;
+            text-decoration: none;
+        }
+
+        .rep-info a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="nav">
+            <a href="index.html" class="nav-brand">CLIMATE EQUITY MAP</a>
+            
+            <div class="nav-right">
+                <a href="community-voices.html">COMMUNITY VOICES</a>
+                <a href="take-action.html" class="current">TAKE ACTION</a>
+                <a href="learn.html">LEARN</a>
+            </div>
+            
+            <button class="hamburger-menu" id="hamburger-btn" aria-label="Toggle menu">
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+                <span class="hamburger-line"></span>
+            </button>
+        </nav>
+    </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobile-overlay"></div>
+
+    <!-- Mobile Menu Panel -->
+    <div class="mobile-menu" id="mobile-menu">
+        <div class="mobile-menu-header">
+            <span class="mobile-menu-title">Menu</span>
+            <button class="close-menu" id="close-menu" aria-label="Close menu">&times;</button>
+        </div>
+        <nav class="mobile-nav-links">
+            <a href="community-voices.html">COMMUNITY VOICES</a>
+            <a href="take-action.html" class="current">TAKE ACTION</a>
+            <a href="learn.html">LEARN</a>
+        </nav>
+    </div>
+
+    <!-- Take Action Hero Section -->
+    <section class="ta-hero">
+        <div class="ta-container">
+            <!-- Speech Bubbles Row -->
+            <div class="ta-speech-bubbles-row">
+                <!-- Left Speech Bubble -->
+                <div class="ta-speech-bubble">
+                    <img src="images/takeaction1.svg" alt="Speech bubble" class="ta-speech-bubble-svg">
+                    <div class="ta-speech-bubble-content">
+                        <h1 class="ta-speech-bubble-title">Take Action</h1>
+                    </div>
+                </div>
+
+                <!-- Right Speech Bubble -->
+                <div class="ta-speech-bubble">
+                    <img src="images/Group 32.svg" alt="Speech bubble" class="ta-speech-bubble-svg">
+                    <div class="ta-speech-bubble-content">
+                        <!-- Empty or can add additional content -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- Description Section -->
+            <div class="ta-description">
+                <p>Climate justice requires collective action. Whether you're a resident seeking resources, an advocate organizing your community, or a policymaker looking to drive change—find the tools and information you need here.</p>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Main Content -->
+    <div class="ta-main-container">
+        <main class="ta-content-area">
+            
+            <!-- For Residents Section -->
+            <section id="residents" class="ta-section">
+                <h2 class="ta-section-title">For Residents</h2>
+                <p class="ta-section-intro">Access local resources, stay informed about community meetings, and prepare your household for climate emergencies.</p>
+                
+                <div class="ta-cards-grid">
+                    <div class="ta-card">
+                        <h3>Local Resources</h3>
+                        <p>Find cooling centers, green spaces, emergency services, and community organizations in your neighborhood.</p>
+                        <ul class="ta-resource-list">
+                            <li><a href="https://portal.311.nyc.gov/article/?kanumber=KA-02663" target="_blank">NYC Cooling Center Locator</a></li>
+                            <li><a href="https://www.nycgovparks.org/greenthumb/" target="_blank">Community Garden Directory</a></li>
+                            <li><a href="https://citizensclimatelobby.org/chapters/NY_NYC/" target="_blank">Local Climate Action Groups</a></li>
+                            <li><a href="https://www.nyserda.ny.gov/All-Programs/Residential-Energy-Assessment-Programs/Get-a-No-Cost-Home-Energy-Assessment" target="_blank">Free Home Energy Assessments</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="ta-card">
+                        <h3>Meeting Calendar</h3>
+                        <p>Stay connected with upcoming community board meetings, town halls, and climate action events.</p>
+                        <div class="ta-calendar-preview">
+                            <div class="calendar-event">
+                                <span class="event-date">Oct 15</span>
+                                <span class="event-title">Community Board 3 - Climate Resilience</span>
+                            </div>
+                            <div class="calendar-event">
+                                <span class="event-date">Oct 22</span>
+                                <span class="event-title">Green Infrastructure Town Hall</span>
+                            </div>
+                            <div class="calendar-event">
+                                <span class="event-date">Nov 3</span>
+                                <span class="event-title">Emergency Preparedness Workshop</span>
+                            </div>
+                        </div>
+                        <a href="#" class="ta-link-button">View Full Calendar</a>
+                    </div>
+                    
+                    <div class="ta-card">
+                        <h3>Emergency Preparedness</h3>
+                        <p>Get your household ready for extreme heat, flooding, and other climate-related emergencies.</p>
+                        <ul class="ta-resource-list">
+                            <li><a href="https://www.nyc.gov/site/em/ready/extreme-heat.page">Heat Wave Safety Guide</a></li>
+                            <li><a href="https://www.nyc.gov/site/em/ready/flooding.page">Flood Preparedness Checklist</a></li>
+                            <li><a href="https://www.health.ny.gov/environmental/emergency/emergency_supply_kit.htm">Emergency Supply Kit Guide</a></li>
+                            <li><a href="https://www.nyc.gov/site/em/ready/coastal-storms-hurricanes.page#:~:text=Visit%20maps.nyc.gov%2Fhurricane%20or%20call%20311%20(,is%20in%20an%20evacuation%20zone.">Know Your Evacuation Zone</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- For Advocates Section -->
+            <section id="advocates" class="ta-section">
+                <h2 class="ta-section-title">For Advocates</h2>
+                <p class="ta-section-intro">Access data, tools, and resources to organize your community and advocate for climate justice.</p>
+                
+                <div class="ta-cards-grid">
+                    <div class="ta-card">
+                        <h3>Data Downloads</h3>
+                        <p>Download geographic and demographic data to support your advocacy work and grant applications.</p>
+                        <ul class="ta-resource-list">
+                            <li><a href="https://a816-dohbesp.nyc.gov/IndicatorPublic/data-features/hvi/">Heat Vulnerability Index</a></li>
+                            <li><a href="https://a816-dohbesp.nyc.gov/IndicatorPublic/data-features/flood-vulnerability-index/">Flood Risk Maps</a></li>
+                            <li><a href="https://www.nyc.gov/site/dep/water/green-infrastructure.page">Green Infrastructure Inventory</a></li>
+                            <li><a href="https://www.nyc.gov/assets/dfta/downloads/pdf/reports/Demographics_by_NTA.pdf">Demographic Data by Neighborhood</a></li>
+                           
+                        </ul>
+                    </div>
+                    
+                    <div class="ta-card">
+                        <h3>Organizing Toolkit</h3>
+                        <p>Templates, guides, and best practices for building climate justice campaigns in your community.</p>
+                        <ul class="ta-resource-list">
+                            <li><a href="https://climatejusticealliance.org/wp-content/uploads/2021/03/CJA_Curriculum_B_FinalWeb.pdf">Community Organizing Guide (PDF)</a></li>
+                            <li><a href="https://www.nyc.gov/assets/cpp/downloads/pdf/EJ-Town-Hall-Deck-022521.pdf">Town Hall on Environmental Justice </a></li>
+                            <li><a href="https://climatejusticealliance.org/fundraising/">Social Media Toolkit—Climate Justice Alliance</a></li>
+                            <li><a href="https://www.rockpa.org/wp-content/uploads/2018/01/Report-of-Funders-Roundtable-September-2017.pdf">Coalition Building Guide</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="ta-card">
+                        <h3>Policy Solutions</h3>
+                        <p>Evidence-based policy solutions to advance climate equity in NYC.</p>
+                        <ul class="ta-resource-list">
+                            <li><a href="https://www.nyc.gov/assets/dep/downloads/pdf/water/stormwater/green-infrastructure/nyc-green-infrastructure-plan-2010.pdf">Green Infrastructure Expansion Plan</a></li>
+                            <li><a href="https://www.health.ny.gov/environmental/weather/cooling/guidance.htm">Cooling Center Standards</a></li>
+                            <li><a href="https://www.nyc.gov/assets/omb/downloads/pdf/exec24-nyccb.pdf">Equitable Climate Budgeting</a></li>
+                            <li><a href="https://www.nyc.gov/content/climate/pages/initiatives/adaptnyc">Community-Led Adaptation Framework</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- For Policymakers Section -->
+            <section id="policymakers" class="ta-section">
+                <h2 class="ta-section-title">For Policymakers</h2>
+                <p class="ta-section-intro">Data-driven tools and analysis to inform equitable climate policy and investment decisions.</p>
+                
+                <div class="ta-cards-grid">
+                    <div class="ta-card">
+                        <h3>Priority Area Maps</h3>
+                        <p>Interactive maps identifying neighborhoods with the highest need for climate resilience investments.</p>
+                        <div class="ta-map-preview">
+                            <!-- Embedded ArcGIS Map -->
+                            <arcgis-embedded-map 
+                                style="height: 400px; width: 100%; border-radius: 4px;" 
+                                item-id="ccfb41fb0da442d493926037a4af5dec" 
+                                theme="light" 
+                                center="-73.95098690305319,40.700009157859995"
+                                scale="288895.2771445" 
+                                portal-url="https://prattsavi.maps.arcgis.com">
+                            </arcgis-embedded-map>
+                        </div>
+                        <a href="community-voices.html" class="ta-link-button" style="margin-top: 15px; display: inline-block;">Open Full Interactive Map</a>
+                    </div>
+                    
+                    <div class="ta-card">
+                        <h3>Cost-Benefit Analysis</h3>
+                        <p>Economic analysis of climate resilience investments and their returns.</p>
+                        <ul class="ta-resource-list">
+                            <li><a href="https://rebuildbydesign.org/reports/bgi-for-nyc/">Green Infrastructure ROI Study</a></li>
+                            <li><a href="https://drive.google.com/file/d/18tj8PCAj2jXJ5XGZWglPfYlwa41yeBOw/view?usp=sharing">Heat Mitigation Cost Analysis</a></li>
+                            <li><a href="https://www.nyc.gov/mayors-office/news/2024/09/mayor-adams-next-generation-new-york-city-s-investments-flood-prevention-and">Flood Prevention Investment Models</a></li>
+                            <li><a href="https://info.nystateofhealth.ny.gov/costsavings">Public Health Cost Savings</a></li>
+                        </ul>
+                    </div>
+                    
+                    <div class="ta-card">
+                        <h3>Implementation Guides</h3>
+                        <p>Step-by-step guides for implementing equitable climate resilience programs.</p>
+                        <ul class="ta-resource-list">
+                            <li><a href="https://www.nyc.gov/assets/doh/downloads/pdf/dpho/race-to-justice-action-kit-guide-community-engagement-framework.pdf">Community Engagement Framework</a></li>
+                            <li><a href="https://www.nyc.gov/assets/dep/downloads/pdf/water/stormwater/green-infrastructure/nyc-green-infrastructure-onsite-design-manual-v2.pdf">Green Infrastructure Deployment Guide</a></li>
+                            <li><a href="https://www.nyc.gov/site/hpd/news/007-22/nyc-seeks-public-input-new-data-tool-can-help-communities-plan-more-equitable-future">Equity Assessment Toolkit</a></li>
+                            <li><a href="https://comptroller.nyc.gov/services/for-the-public/measuring-nyc-government-performance/overview/">Performance Metrics Dashboard</a></li>
+                        </ul>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Contact Decision Makers Section -->
+            <section id="contact" class="ta-section">
+                <h2 class="ta-section-title">Contact Decision Makers</h2>
+                <p class="ta-section-intro">Make your voice heard by reaching out to elected officials and agency leaders.</p>
+                
+                <div class="ta-contact-grid">
+                    <div class="ta-contact-card">
+                        <h3>Find Your Representatives</h3>
+                        <p>Enter your address to find your City Council member and other elected officials.</p>
+                        <div class="ta-address-lookup">
+                            <input type="text" id="address-input" placeholder="Enter your NYC address" class="ta-input">
+                            <button class="ta-button" id="find-rep-btn">Find Representatives</button>
+                        </div>
+                        <div id="search-results" class="search-results">
+                            <h4>Your Representatives:</h4>
+                            <div id="results-content"></div>
+                        </div>
+                    </div>
+                    
+                    <div class="ta-contact-card">
+                        <h3>Key Agencies</h3>
+                        <ul class="ta-agency-list">
+                            <li>
+                                <strong>NYC Department of Environmental Protection</strong>
+                                <a href="mailto:info@dep.nyc.gov">info@dep.nyc.gov</a>
+                            </li>
+                            <li>
+                                <strong>NYC Emergency Management</strong>
+                                <a href="mailto:info@oem.nyc.gov">info@oem.nyc.gov</a>
+                            </li>
+                            <li>
+                                <strong>NYC Parks Department</strong>
+                                <a href="mailto:commissioner@parks.nyc.gov">commissioner@parks.nyc.gov</a>
+                            </li>
+                            <li>
+                                <strong>Mayor's Office of Climate & Environmental Justice</strong>
+                                <a href="mailto:climate@cityhall.nyc.gov">climate@cityhall.nyc.gov</a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="ta-action-templates">
+                    <h3>Email Templates</h3>
+                    <p>Use these templates to contact decision makers about climate justice issues:</p>
+                    <div class="ta-template-grid">
+                        <a href="#" class="ta-template-link" data-template="green-infrastructure">Green Infrastructure Investment</a>
+                        <a href="#" class="ta-template-link" data-template="cooling-center">Cooling Center Expansion</a>
+                        <a href="#" class="ta-template-link" data-template="flood-protection">Flood Protection</a>
+                        <a href="#" class="ta-template-link" data-template="air-quality">Air Quality Improvement</a>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-content">
+                <h3>On this page:</h3>
+                <h4>Take Action Resources</h4>
+                <ul class="sidebar-nav">
+                    <li><a href="#residents" class="nav-link active">For Residents</a></li>
+                    <li><a href="#advocates" class="nav-link">For Advocates</a></li>
+                    <li><a href="#policymakers" class="nav-link">For Policymakers</a></li>
+                    <li><a href="#contact" class="nav-link">Contact Decision Makers</a></li>
+                </ul>
+            </div>
+        </aside>
+    </div>
+
+    <!-- Email Template Modal -->
+    <div id="template-modal" class="template-modal">
+        <div class="template-modal-content">
+            <div class="template-modal-header">
+                <h3 id="modal-title">Email Template</h3>
+                <button class="template-close" id="modal-close">&times;</button>
+            </div>
+            <div class="template-text" id="template-text"></div>
+            <div class="template-actions">
+                <button class="template-copy-btn" id="copy-template">Copy to Clipboard</button>
+                <button class="template-edit-btn" id="edit-template">Edit Template</button>
+            </div>
+            <div class="copy-success" id="copy-success">✓ Copied to clipboard!</div>
+        </div>
+    </div>
+
+    <script>
+        // Email Templates
+        const emailTemplates = {
+            'green-infrastructure': {
+                title: 'Green Infrastructure Investment',
+                content: `Subject: Urgent Need for Green Infrastructure Investment in [Your Neighborhood]
+
+Dear [Representative Name],
+
+I am writing as a constituent of [District Number] to urge you to prioritize equitable green infrastructure investment in our community.
+
+Climate change is already impacting our neighborhood through increased heat waves and flooding. However, our community lacks adequate green infrastructure such as street trees, green roofs, and rain gardens that could help mitigate these effects.
+
+According to the NYC Climate Equity Map, [Your Neighborhood] faces:
+• High heat vulnerability with limited tree canopy coverage
+• Flood risk areas with insufficient stormwater management
+• Environmental justice concerns affecting low-income and BIPOC residents
+
+I urge you to:
+1. Allocate funding for green infrastructure projects in underserved neighborhoods
+2. Ensure community input in the planning and implementation process
+3. Prioritize areas with the highest climate vulnerability and lowest existing green infrastructure
+
+Climate resilience should not be a luxury available only to affluent neighborhoods. Every New Yorker deserves access to green spaces and climate protection.
+
+Thank you for your attention to this critical issue. I look forward to your response on how you plan to address climate equity in our district.
+
+Sincerely,
+[Your Name]
+[Your Address]
+[Your Email]
+[Your Phone Number]`
+            },
+            'cooling-center': {
+                title: 'Cooling Center Expansion',
+                content: `Subject: Expanding Access to Cooling Centers in [Your Neighborhood]
+
+Dear [Representative Name],
+
+As your constituent in [District Number], I am writing to request increased funding and accessibility for cooling centers in our community.
+
+With climate change driving more frequent and severe heat waves, cooling centers are a vital public health resource. However, many neighborhoods, including ours, lack sufficient cooling center coverage.
+
+Current gaps in our community:
+• Limited number of cooling centers within walking distance
+• Inadequate hours of operation during heat emergencies
+• Insufficient outreach to vulnerable populations (elderly, low-income residents, people with disabilities)
+
+I urge you to support legislation and funding that will:
+1. Expand the number of cooling centers in high-heat vulnerability areas
+2. Extend operating hours during heat emergencies
+3. Improve multilingual outreach and transportation access
+4. Ensure centers are equipped with backup power for reliability
+
+Heat-related illness and death are preventable. Every neighborhood deserves adequate access to life-saving cooling resources.
+
+I appreciate your leadership on climate justice issues and look forward to your response.
+
+Sincerely,
+[Your Name]
+[Your Address]
+[Your Email]
+[Your Phone Number]`
+            },
+            'flood-protection': {
+                title: 'Flood Protection',
+                content: `Subject: Flood Protection Infrastructure for [Your Neighborhood]
+
+Dear [Representative Name],
+
+I am a resident of [District Number] writing to advocate for comprehensive flood protection measures in our community.
+
+Recent extreme weather events have demonstrated that our neighborhood is inadequately prepared for flooding. Climate change will only intensify this risk, threatening homes, businesses, and public safety.
+
+Our community needs:
+• Updated stormwater drainage systems
+• Green infrastructure (rain gardens, permeable pavements, bioswales)
+• Flood barriers in high-risk areas
+• Regular maintenance of existing drainage infrastructure
+
+I request that you:
+1. Secure funding for flood mitigation projects in vulnerable neighborhoods
+2. Prioritize nature-based solutions that provide multiple community benefits
+3. Ensure equitable distribution of flood protection resources
+4. Include community voices in planning and implementation
+
+Low-income and BIPOC communities often bear the brunt of flood damage while receiving the least investment in protection infrastructure. This inequity must be addressed.
+
+Thank you for your commitment to protecting all constituents from climate risks.
+
+Sincerely,
+[Your Name]
+[Your Address]
+[Your Email]
+[Your Phone Number]`
+            },
+            'air-quality': {
+                title: 'Air Quality Improvement',
+                content: `Subject: Improving Air Quality in [Your Neighborhood]
+
+Dear [Representative Name],
+
+As a constituent of [District Number], I am writing to urge immediate action on air quality improvement in our community.
+
+Our neighborhood experiences poor air quality due to [traffic congestion/industrial facilities/lack of green spaces], which disproportionately affects the health of residents, particularly children, elderly people, and those with respiratory conditions.
+
+Health impacts in our community include:
+• Increased asthma rates
+• Higher respiratory illness
+• Cardiovascular disease
+• Reduced quality of life
+
+I call on you to support policies that will:
+1. Increase tree planting and green space in areas with poor air quality
+2. Implement stricter emissions standards for local industries
+3. Expand monitoring of air quality in environmental justice communities
+4. Invest in clean transportation infrastructure (bike lanes, electric buses)
+
+Clean air is a fundamental right. Communities of color and low-income neighborhoods should not bear a disproportionate burden of air pollution.
+
+I appreciate your attention to this urgent public health issue and await your response.
+
+Sincerely,
+[Your Name]
+[Your Address]
+[Your Email]
+[Your Phone Number]`
+            }
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Mobile menu functionality
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileOverlay = document.getElementById('mobile-overlay');
+            const closeMenuBtn = document.getElementById('close-menu');
+            const body = document.body;
+
+            function openMobileMenu() {
+                hamburgerBtn.classList.add('active');
+                mobileMenu.classList.add('active');
+                mobileOverlay.classList.add('active');
+                body.classList.add('menu-open');
+            }
+
+            function closeMobileMenu() {
+                hamburgerBtn.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                mobileOverlay.classList.remove('active');
+                body.classList.remove('menu-open');
+            }
+
+            if (hamburgerBtn) {
+                hamburgerBtn.addEventListener('click', function() {
+                    if (mobileMenu.classList.contains('active')) {
+                        closeMobileMenu();
+                    } else {
+                        openMobileMenu();
+                    }
+                });
+            }
+
+            if (closeMenuBtn) {
+                closeMenuBtn.addEventListener('click', closeMobileMenu);
+            }
+
+            if (mobileOverlay) {
+                mobileOverlay.addEventListener('click', closeMobileMenu);
+            }
+
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-links a');
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', closeMobileMenu);
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && mobileMenu && mobileMenu.classList.contains('active')) {
+                    closeMobileMenu();
+                }
+            });
+
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768 && mobileMenu && mobileMenu.classList.contains('active')) {
+                    closeMobileMenu();
+                }
+            });
+
+            // Sidebar navigation
+            const sidebarNavLinks = document.querySelectorAll('.sidebar-nav .nav-link');
+
+            sidebarNavLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href').substring(1);
+                    const targetSection = document.getElementById(targetId);
+                    
+                    if (targetSection) {
+                        targetSection.scrollIntoView({ 
+                            behavior: 'smooth',
+                            block: 'start'
+                        });
+                    }
+                    
+                    sidebarNavLinks.forEach(l => l.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+
+            // Update active link on scroll
+            window.addEventListener('scroll', function() {
+                const sections = document.querySelectorAll('.ta-section');
+                const scrollPos = window.scrollY + 100;
+
+                sections.forEach(section => {
+                    const top = section.offsetTop;
+                    const bottom = top + section.offsetHeight;
+                    const id = section.getAttribute('id');
+                    
+                    if (scrollPos >= top && scrollPos < bottom) {
+                        sidebarNavLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href') === `#${id}`) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            });
+
+            // Email Template Modal Functionality
+            const modal = document.getElementById('template-modal');
+            const modalTitle = document.getElementById('modal-title');
+            const modalText = document.getElementById('template-text');
+            const modalClose = document.getElementById('modal-close');
+            const copyBtn = document.getElementById('copy-template');
+            const editBtn = document.getElementById('edit-template');
+            const copySuccess = document.getElementById('copy-success');
+            const templateLinks = document.querySelectorAll('.ta-template-link');
+
+            templateLinks.forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const templateKey = this.getAttribute('data-template');
+                    const template = emailTemplates[templateKey];
+                    
+                    if (template) {
+                        modalTitle.textContent = template.title;
+                        modalText.textContent = template.content;
+                        modal.classList.add('active');
+                        copySuccess.classList.remove('show');
+                    }
+                });
+            });
+
+            modalClose.addEventListener('click', function() {
+                modal.classList.remove('active');
+            });
+
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.classList.remove('active');
+                }
+            });
+
+            copyBtn.addEventListener('click', function() {
+                const text = modalText.textContent;
+                navigator.clipboard.writeText(text).then(function() {
+                    copySuccess.classList.add('show');
+                    setTimeout(function() {
+                        copySuccess.classList.remove('show');
+                    }, 3000);
+                }).catch(function(err) {
+                    alert('Failed to copy text. Please try selecting and copying manually.');
+                });
+            });
+
+            editBtn.addEventListener('click', function() {
+                const currentText = modalText.textContent;
+                const textarea = document.createElement('textarea');
+                textarea.value = currentText;
+                textarea.style.width = '100%';
+                textarea.style.minHeight = '400px';
+                textarea.style.padding = '20px';
+                textarea.style.fontSize = '14px';
+                textarea.style.fontFamily = 'monospace';
+                textarea.style.border = '1px solid #ddd';
+                textarea.style.borderRadius = '4px';
+                
+                modalText.innerHTML = '';
+                modalText.appendChild(textarea);
+                
+                editBtn.textContent = 'Save Changes';
+                editBtn.onclick = function() {
+                    modalText.textContent = textarea.value;
+                    editBtn.textContent = 'Edit Template';
+                    editBtn.onclick = null;
+                };
+            });
+
+            // Representative Search Functionality
+            const findRepBtn = document.getElementById('find-rep-btn');
+            const addressInput = document.getElementById('address-input');
+            const searchResults = document.getElementById('search-results');
+            const resultsContent = document.getElementById('results-content');
+
+            findRepBtn.addEventListener('click', function() {
+                const address = addressInput.value.trim();
+                
+                if (!address) {
+                    alert('Please enter an address');
+                    return;
+                }
+
+                // Show results section
+                searchResults.classList.add('show');
+                
+                // Display instruction to use NYC Council website
+                resultsContent.innerHTML = `
+                    <div class="rep-info">
+                        <strong>Find Your City Council Member</strong>
+                        <p>To find your City Council representative, please visit:</p>
+                        <p><a href="https://council.nyc.gov/districts/" target="_blank">NYC Council District Finder →</a></p>
+                        <p style="margin-top: 10px; font-size: 14px; color: #666;">
+                            Enter your address on the NYC Council website to find your representative and contact information.
+                        </p>
+                    </div>
+                    <div class="rep-info">
+                        <strong>Additional Representatives</strong>
+                        <p>For other elected officials (State Assembly, State Senate, U.S. Congress):</p>
+                        <p><a href="https://www.mygovnyc.org/" target="_blank">MyGovNYC - Find All Representatives →</a></p>
+                    </div>
+                    <div class="rep-info">
+                        <strong>Your Address</strong>
+                        <p>${address}</p>
+                    </div>
+                `;
+            });
+
+            // Allow Enter key to trigger search
+            addressInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    findRepBtn.click();
+                }
+            });
+        });
+    </script>
+</body>
+</html>

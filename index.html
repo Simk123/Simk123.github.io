@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Climate Equity Map NYC</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://use.typekit.net/vbu4mjm.css">
+
+
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+       <nav class="nav">
+    <a href="index.html" class="nav-brand">CLIMATE JUSTICE</a>
+    
+    <div class="nav-right">
+        <a href="community-voices.html">COMMUNITY VOICES</a>
+        <a href="take-action.html">TAKE ACTION</a>
+        <a href="learn.html">LEARN</a>
+    </div>
+    
+    <button class="hamburger-menu" id="hamburger-btn" aria-label="Toggle menu">
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+        <span class="hamburger-line"></span>
+    </button>
+</nav>
+    </header>
+
+    <!-- Mobile Menu Overlay -->
+    <div class="mobile-menu-overlay" id="mobile-overlay"></div>
+
+    <!-- Mobile Menu Panel -->
+    <div class="mobile-menu" id="mobile-menu">
+    <div class="mobile-menu-header">
+        <span class="mobile-menu-title">Menu</span>
+        <button class="close-menu" id="close-menu" aria-label="Close menu">&times;</button>
+    </div>
+    <nav class="mobile-nav-links">
+        <a href="community-voices.html">COMMUNITY VOICES</a>
+        <a href="take-action.html">TAKE ACTION</a>
+        <a href="learn.html">LEARN</a>
+    </nav>
+    </div>
+
+    <!-- Hero Section -->
+    <section class="landing-hero">
+         <div class="landing-hero-background">
+            <img src="images/landing-background.svg" alt="" class="landing-bg-svg">
+        </div>
+        <div class="landing-container">
+            <!-- Left Content -->
+            <div class="landing-content">
+                <p class="landing-tagline">Climate resilience should be for everyone, not just those who can afford it.</p>
+                
+                <h1 class="landing-title">Climate Equity Map</h1>
+                
+                <div class="landing-description">
+                    <p>Revealing where NYC's climate risks intersect with decades of disinvestment—and where communities need resources most.</p>
+                    
+                    <p>Understanding the gap is the first step toward closing it. Learn about the science behind climate inequality, take action in your community, or explore how other neighborhoods are building resilience.</p>
+                </div>
+            </div>
+
+            <!-- Right Map Image -->
+            <div class="landing-map">
+                <img src="images/Mask group.svg" alt="NYC Climate Equity Map" class="map-image">
+                    <a href="community-voices.html" class="map-overlay-link" aria-label="View Community Voices Map"></a>
+
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // Mobile menu functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const mobileOverlay = document.getElementById('mobile-overlay');
+            const closeMenuBtn = document.getElementById('close-menu');
+            const body = document.body;
+
+            function openMobileMenu() {
+                hamburgerBtn.classList.add('active');
+                mobileMenu.classList.add('active');
+                mobileOverlay.classList.add('active');
+                body.classList.add('menu-open');
+            }
+
+            function closeMobileMenu() {
+                hamburgerBtn.classList.remove('active');
+                mobileMenu.classList.remove('active');
+                mobileOverlay.classList.remove('active');
+                body.classList.remove('menu-open');
+            }
+
+            hamburgerBtn.addEventListener('click', function() {
+                if (mobileMenu.classList.contains('active')) {
+                    closeMobileMenu();
+                } else {
+                    openMobileMenu();
+                }
+            });
+
+            closeMenuBtn.addEventListener('click', closeMobileMenu);
+            mobileOverlay.addEventListener('click', closeMobileMenu);
+
+            const mobileNavLinks = document.querySelectorAll('.mobile-nav-links a');
+            mobileNavLinks.forEach(link => {
+                link.addEventListener('click', closeMobileMenu);
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (e.key === 'Escape' && mobileMenu.classList.contains('active')) {
+                    closeMobileMenu();
+                }
+            });
+
+            window.addEventListener('resize', function() {
+                if (window.innerWidth > 768 && mobileMenu.classList.contains('active')) {
+                    closeMobileMenu();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
